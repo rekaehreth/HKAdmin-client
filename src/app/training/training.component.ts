@@ -14,7 +14,7 @@ import { NewTrainingComponent } from './new-training/new-training.component';
 })
 
 export class TrainingComponent implements OnInit {
-    colNum: number = 5;
+    colNum = 5;
     trainings: RawTraining[] = [];
     roles: string[] = [];
 
@@ -35,13 +35,10 @@ export class TrainingComponent implements OnInit {
         this.trainings = await this.http.get<RawTraining[]>('training');
         if( this.trainings.length != 0 ){
             this.trainings.sort((a: RawTraining, b: RawTraining) => {
-                if( a.startTime < b.startTime ) {
-                    return -1;
-                }
-                if( a.startTime === b.startTime ) {
+                if (a.startTime === b.startTime) {
                     return 0;
                 }
-                if( a.startTime > b.startTime ) {
+                if (a.startTime > b.startTime) {
                     return 1;
                 }
                 return -1;
@@ -60,10 +57,10 @@ export class TrainingComponent implements OnInit {
             disableClose: true,
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log("New training dialog closed ", result);
-            if(result.refreshNeeded) {
+            console.log('New training dialog closed ', result);
+            if (result.refreshNeeded) {
                 this.loadTrainings();
             }
-        })
+        });
     }
 }

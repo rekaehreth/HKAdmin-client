@@ -13,13 +13,13 @@ import { formatFullDate, formatHourDate } from 'src/app/utils';
 })
 export class NewTrainingComponent implements OnInit {
     locations: RawLocation[] = [];
-    selectedLocationId: number = 0;
+    selectedLocationId = 0;
     groups: RawGroup[] = [];
     loadedGroupIds: number[] = [];
     selectedGroups: number[] = [];
-    selectedType: string = "";
-    trainingTypes: string[] = ["Off Ice", "Ice", "Ballet"];
-    mode: string = "new";
+    selectedType = '';
+    trainingTypes: string[] = ['Off Ice', 'Ice', 'Ballet'];
+    mode = 'new';
     displayDate: Date = new Date();
     startHour: Date = new Date();
     endHour: Date = new Date();
@@ -42,7 +42,7 @@ export class NewTrainingComponent implements OnInit {
         this.loadLocations();
         this.loadGroups();
         if (this.data) {
-            this.mode = "edit";
+            this.mode = 'edit';
             this.selectedLocationId = this.data.location.id;
             this.displayDate = new Date(this.data.startTime);
             this.startHour = this.data.startTime;
@@ -68,7 +68,7 @@ export class NewTrainingComponent implements OnInit {
         this.groups = await this.http.get<RawGroup[]>('group');
     }
     async saveTraining(): Promise<void> {
-        if (this.mode === "new") {
+        if (this.mode === 'new') {
             this.saveNewTraining();
         }
         else {
@@ -79,28 +79,28 @@ export class NewTrainingComponent implements OnInit {
         const newTraining = await this.http.post<RawTraining>('training/new', {
             locationId: this.selectedLocationId,
             rawTrainingData: {
-                startTime: formatFullDate(this.dateControl.value) + " " + this.startTimeControl.value,
-                endTime: formatFullDate(this.dateControl.value) + " " + this.endTimeControl.value,
+                startTime: formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value,
+                endTime: formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value,
                 type: this.selectedType,
-                applications: "",
+                applications: '',
             }
         });
         for (const groupId of this.selectedGroups) {
             await this.http.post<{}>('training/addGroup', {
-                "groupId": groupId,
-                "trainingId": newTraining.id
+                groupId,
+                trainingId: newTraining.id
             });
         }
         this.dialogRef.close({ refreshNeeded: true });
     }
     async updateTraining(): Promise<void> {
-        // **TODO** only modify data that has been modified in form - does typeorm does that for me? 
+        // **TODO** only modify data that has been modified in form - does typeorm does that for me?
         const modifiedTraining = await this.http.post<{}>('training/modify', {
             locationId: this.selectedLocationId,
             rawTrainingData: {
                 id: this.data.id,
-                startTime: formatFullDate(this.dateControl.value) + " " + this.startTimeControl.value,
-                endTime: formatFullDate(this.dateControl.value) + " " + this.endTimeControl.value,
+                startTime: formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value,
+                endTime: formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value,
                 type: this.selectedType,
             }
         });
@@ -108,14 +108,14 @@ export class NewTrainingComponent implements OnInit {
         const addedGroups = this.selectedGroups.filter( id => { return !this.loadedGroupIds.includes(id); });
         for (const groupId of addedGroups) {
             await this.http.post<RawGroup>('training/addGroup', {
-                "groupId": groupId,
-                "trainingId": this.data.id
+                groupId,
+                trainingId: this.data.id
             });
         }
         for (const groupId of removedGroups) {
             await this.http.post<RawGroup>('training/removeGroup', {
-                "groupId": groupId,
-                "trainingId": this.data.id
+                groupId,
+                trainingId: this.data.id
             });
         }
         this.dialogRef.close({ refreshNeeded: true });
