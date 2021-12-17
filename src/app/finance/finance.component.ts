@@ -18,7 +18,7 @@ export class FinanceComponent implements OnInit {
     userDataSource = new MatTableDataSource<RawPayment>();
 
     @ViewChild(MatSort) sort?: MatSort;
-    adminDisplayedColumns: string[] = ['date', 'name', 'email', 'description', 'amount', 'status'];
+    adminDisplayedColumns: string[] = ['date', 'name', 'email', 'amount', 'status'];
     userDisplayedColumns: string[] = ['date', 'amount', 'status'];
 
     roles: string[] = [];
@@ -66,6 +66,6 @@ export class FinanceComponent implements OnInit {
     }
     // layout: similarly to user, a table, with sort options to username, payment date, description
     // if no user is linked, display name from description with red and concatenate (deleted user)
-    // amount: green if > 0, red if < 0, standard if === 0 
+    // amount: green if > 0, red if < 0, standard if === 0
     // **TODO** when deleting a user, remove user from payments linked to it
 }
