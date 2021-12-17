@@ -1,8 +1,6 @@
-<div id="menu" fxLayout="column">
-    <div fxLayout="row" class="menuItem" *ngFor="let item of roleSpecificMenuItems ">
-            <a [routerLink]="'../'+item.routerLink" routerLinkActive = "active" class="menuButton"> 
-                <mat-icon> {{ item.icon }} </mat-icon>
-                {{ item.title }} 
-            </a> 
-    </div>
+<div class="menuItem" *ngFor="let item of roleSpecificMenuItems ">
+    <a [routerLink]="'../'+item.routerLink" routerLinkActive="active" class="menuButton">
+        <mat-icon> {{ item.icon }} </mat-icon>
+        <span *ngIf="displayText" class="menuButtonText">{{ item.title }}</span>
+    </a>
 </div>

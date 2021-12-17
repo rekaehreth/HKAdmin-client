@@ -1,27 +1,13 @@
-#headerContainer {
-    height: 10%;
-    background-image: url("../assets/header.jpg");
-    background-position: center;
-    background-size: cover;
+mat-sidenav-container {
+    height: 100%;
 }
-#hka-logo {
-    align-content: center;
+mat-sidenav, mat-sidenav-content {
+    padding: 16px;
 }
-#contentRowContainer {
-    height: 90%;
-}
-// .bordered {
-//     border: 2px;
-//     border-style: solid;
-//     border-color:maroon;
-// }
-#socialMediaContainer {
-    padding-top: 2%;
-    background: #0a1e33;
-    color: #a6e2fc;
-    text-align: center;
+mat-sidenav {
+    background-color: #0a1e33;
 }
 
-.loginButton {
-    background-color: #1f7ca3;
+.mat-drawer-transition .mat-drawer-content {
+    transition-duration: 0s !important;
 }

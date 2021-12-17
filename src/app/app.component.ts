@@ -11,6 +11,7 @@ import { RegistrationComponent } from './registration/registration.component';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+    menuExpanded = false;
     title = 'frontend';
     constructor(
         public dialog: MatDialog,

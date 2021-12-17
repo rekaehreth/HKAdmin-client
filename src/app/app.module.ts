@@ -2,7 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,6 +46,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { RegisterGuestDialogComponent } from './training/training-details-dialog/register-guest-dialog/register-guest-dialog.component';
 import { ManageTrainingFinancesDialogComponent } from './training/training-details-dialog/manage-training-finances-dialog/manage-training-finances-dialog.component';
 import { TrainingDetailsDialogComponent } from './training/training-details-dialog/training-details-dialog.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
     declarations: [
@@ -95,7 +96,8 @@ import { TrainingDetailsDialogComponent } from './training/training-details-dial
         MatTooltipModule,
         MatChipsModule,
         MatSnackBarModule,
-        
+        MatSidenavModule,
+        NoopAnimationsModule,
     ],
     providers: [
         RegistrationComponent,

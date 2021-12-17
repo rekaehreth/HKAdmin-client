@@ -1,19 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { 
-    margin: 0; 
-    font-family: Roboto, "Helvetica Neue", sans-serif; 
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
     background-color: #0a1e33;
 }
-
 .right-aligned-header > .mat-content {
     justify-content: space-between;
 }
-
 .mat-content > mat-panel-title, .mat-content > mat-panel-description {
     flex: 0 0 auto;
 }
 .scrollable {
     overflow: scroll;
+}
+.menuButton{
+    text-align: center;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 5px 10px;
+    background-color: #0a1e33;
+    color: #a6e2fc;
+    height: 30px;
+}
+.menuButton:hover {
+    background-color: #1B3B5E;
+    color: white;
+}
+.menuButtonText {
+    padding-left: 10px;
+}
+.active {
+    background-color: #1f7ca3;
+    color: white !important;
+}
+#menu {
+    height : 100%;
+    background-color: #0a1e33;
 }

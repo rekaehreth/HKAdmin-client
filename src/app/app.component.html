@@ -1,40 +1,42 @@
-<div fxLayout="column" fxFlexFill>
-    <div id="headerContainer" fxLayout="row" class="bordered">
-        <img>
-    </div>
-    <div id="contentRowContainer" fxLayout="row">
-        <div id="navBarContainer" fxFlex=15 class="bordered">
-            <app-nav-bar></app-nav-bar>
+<mat-sidenav-container>
+    <mat-sidenav opened mode="side" *ngIf="!menuExpanded">
+        <div class="menuItem">
+            <a class="menuButton" (click)="menuExpanded=!menuExpanded">
+                <mat-icon> menu </mat-icon>
+            </a>
         </div>
-        <div id="contentContainer" fxFlex=70 class="bordered">
-            <router-outlet></router-outlet>
-        </div>
-        <div id="socialMediaContainer" fxFlex=15 class="bordered">
-            <button class="loginButton" *ngIf="!isUserLoggedIn" mat-raised-button (click)="openLoginDialog()">
+        <app-nav-bar [displayText]="false" ></app-nav-bar>
+        <div class="menuItem">
+            <a class="menuButton" *ngIf="!isUserLoggedIn" (click)="openLoginDialog()">
                 <mat-icon> login </mat-icon>
-                Login / Register
-            </button>
-            <button class="loginButton" *ngIf="isUserLoggedIn" mat-raised-button (click)="logOut()">
+            </a>
+            <a class="menuButton" *ngIf="isUserLoggedIn" (click)="logOut()">
                 <mat-icon> logout </mat-icon>
-                Logout
-            </button>
-            <br />
-            <div id="hka-logo">
-                <a href="http://www.hoffmannakademia.hu/">
-                    <img src="../assets/cropped-hka-logo.png" width="40%" height="40%" >
-                </a>
-            </div>
-            <div>
-                <a href="https://www.instagram.com/hoffmann.akademia/">
-                    <img src="../assets/instagram_mini.png" width="10%" height="0%" >
-                </a>
-                <a href="https://www.facebook.com/hoffmannakademia">
-                    <img src="../assets/facebook_mini.png" width="10%" height="10%" >
-                </a>
-                <a href="https://www.youtube.com/channel/UCicLYoQFtJB_onWi0zJPTdQ">
-                    <img src="../assets/youtube_mini.png" width="10%" height="10%" >
-                </a>
-            </div>
+            </a>
         </div>
-    </div>
-</div>
+    </mat-sidenav>
+    <mat-sidenav opened mode="side" *ngIf="menuExpanded">
+        <div class="menuItem">
+            <a class="menuButton" (click)="menuExpanded=!menuExpanded">
+                <mat-icon> menu </mat-icon>
+            </a>
+        </div>
+        <app-nav-bar [displayText]="true" ></app-nav-bar>
+        <div class="menuItem">
+            <a class="menuButton" *ngIf="!isUserLoggedIn" (click)="openLoginDialog()">
+                <mat-icon> login </mat-icon>
+                <span *ngIf="menuExpanded" class="menuButtonText">Login</span>
+            </a>
+            <a class="menuButton" *ngIf="isUserLoggedIn" (click)="logOut()">
+                <mat-icon> logout </mat-icon>
+                <span *ngIf="menuExpanded" class="menuButtonText">Logout</span>
+            </a>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content (click)="menuExpanded=false" >
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+
