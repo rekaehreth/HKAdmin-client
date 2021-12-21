@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 
 @Injectable( { providedIn: 'root' })
 export class HttpService {
-    hostUrl = 'https://hkadmin-api.icescream.net/';
+    hostUrl = 'http://localhost:3000/';
     httpHeaders: { headers: HttpHeaders } = { headers: new HttpHeaders({'Content-Type': 'application/json'})};
     constructor(
         private http: HttpClient,

@@ -51,7 +51,7 @@ export class TrainingComponent implements OnInit {
 
             return true;
     }
-    openNewTrainingDialog() {
+    openNewTrainingDialog(): void {
         const dialogRef = this.dialog.open(NewTrainingComponent, {
             width: '50vw',
             disableClose: true,
