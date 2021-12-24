@@ -21,6 +21,10 @@
                 </mat-select>
             </mat-form-field>
             <br>
+            <mat-checkbox [(ngModel)]="isPublic" [ngModelOptions]="{standalone: true}" required>
+                Public
+            </mat-checkbox>
+            <br>
             <mat-form-field>
                 <mat-label>Choose a day</mat-label>
                 <input matInput [matDatepicker]="picker" placeHolder="Date of training" required name="day"

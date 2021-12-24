@@ -18,6 +18,7 @@ export class NewTrainingComponent implements OnInit {
     loadedGroupIds: number[] = [];
     selectedGroups: number[] = [];
     selectedType = '';
+    isPublic = false;
     trainingTypes: string[] = ['Off Ice', 'Ice', 'Ballet'];
     mode = 'new';
     displayDate: Date = new Date();
@@ -46,6 +47,7 @@ export class NewTrainingComponent implements OnInit {
             this.selectedLocationId = this.data.location.id;
             this.displayDate = new Date(this.data.startTime);
             this.startHour = this.data.startTime;
+            this.isPublic = this.data.isPublic;
             this.endHour = this.data.endTime;
             this.selectedType = this.data.type;
             this.data.groups.forEach( group => {
@@ -56,7 +58,7 @@ export class NewTrainingComponent implements OnInit {
         }
         this.initControls();
     }
-    initControls() {
+    initControls(): void {
         this.dateControl = new FormControl(this.displayDate, Validators.required);
         this.startTimeControl = new FormControl(formatHourDate(this.startHour), Validators.required);
         this.endTimeControl = new FormControl(formatHourDate(this.endHour), Validators.required);
@@ -82,6 +84,7 @@ export class NewTrainingComponent implements OnInit {
                 startTime: formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value,
                 endTime: formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value,
                 type: this.selectedType,
+                isPublic: this.isPublic,
                 applications: '',
             }
         });
@@ -102,6 +105,7 @@ export class NewTrainingComponent implements OnInit {
                 startTime: formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value,
                 endTime: formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value,
                 type: this.selectedType,
+                isPublic: this.isPublic,
             }
         });
         const removedGroups = this.loadedGroupIds.filter( id => { return !this.selectedGroups.includes(id); });
@@ -120,7 +124,7 @@ export class NewTrainingComponent implements OnInit {
         }
         this.dialogRef.close({ refreshNeeded: true });
     }
-    cancel() {
+    cancel(): void {
         this.dialogRef.close({ refreshNeeded: false });
     }
 }

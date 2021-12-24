@@ -9,7 +9,8 @@ export type RawTraining = {
     status: string; // Planned | Fixed | Past
     payments: RawPayment[];
     type: string;
-}
+    isPublic: boolean;
+};
 
 export type Application = {
     userId: number;
@@ -25,14 +26,14 @@ export type RawUser = {
     email : string;
     username : string;
     password : string;
-    groups : any[];
+    groups : RawGroup[];
     birth_date : Date;
     payments : any[];
     // children : any[];
 }
 
 export type RawCoach = {
-    id: number; 
+    id: number;
     user: RawUser;
     groups: RawGroup[];
     trainings: RawTraining[];

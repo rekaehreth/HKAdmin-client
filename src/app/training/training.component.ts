@@ -15,7 +15,7 @@ import { NewTrainingComponent } from './new-training/new-training.component';
 
 export class TrainingComponent implements OnInit {
     colNum = 5;
-    trainings: RawTraining[] = [];
+    trainings: {training: RawTraining, subscribedForTraining: boolean}[] = [];
     roles: string[] = [];
 
     formatFullDate = formatFullDate;
@@ -25,20 +25,30 @@ export class TrainingComponent implements OnInit {
         public dialog: MatDialog,
         private authService: AuthService,
     ) {
-        this.authService.loginStatusChange.subscribe( _ => { this.loadTrainings() });
+        this.authService.loginStatusChange.subscribe( _ => { this.loadTrainings(); });
     }
     ngOnInit(): void {
-        this.loadTrainings();
-        this.roles = this.authService.getLoggedInRoles();
+        this.loadTrainings().then(_ => this.roles = this.authService.getLoggedInRoles());
     }
     async loadTrainings(): Promise<void> {
-        this.trainings = await this.http.get<RawTraining[]>('training');
-        if( this.trainings.length != 0 ){
-            this.trainings.sort((a: RawTraining, b: RawTraining) => {
-                if (a.startTime === b.startTime) {
+        const userId = this.authService.getLoggedInUserId();
+        if (userId === -1){
+            this.trainings = (await this.http.get<RawTraining[]>('training/listPublic'))
+                .map(training => ({training, subscribedForTraining: false}));
+        }else{
+            this.trainings  = await this.http.get<{training: RawTraining, subscribedForTraining: boolean}[]>
+                (`user/listAvailableTrainings/${userId}`);
+        }
+        if (this.trainings.length !== 0 ){
+            this.trainings.sort(
+                (
+                    a: {training: RawTraining, subscribedForTraining: boolean},
+                    b: {training: RawTraining, subscribedForTraining: boolean}
+                ) => {
+                if (a.training.startTime === b.training.startTime) {
                     return 0;
                 }
-                if (a.startTime > b.startTime) {
+                if (a.training.startTime > b.training.startTime) {
                     return 1;
                 }
                 return -1;

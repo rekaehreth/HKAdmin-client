@@ -23,7 +23,6 @@ export class RegisterGuestDialogComponent implements OnInit {
     async register(): Promise<void> {
         if (!this.nameControl.errors && !this.emailControl.errors) {
             const result = await this.http.get<{ success: boolean, user: RawUser }>(`user/getByEmail/${this.emailControl.value}`);
-            console.log(result);
             if( result.success ) {
                 this.dialogRef.close({ action: "save", user: result.user });
             }

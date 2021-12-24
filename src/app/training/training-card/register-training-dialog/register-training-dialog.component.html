@@ -1,0 +1,30 @@
+<mat-card>
+    <mat-card-title style="text-align:center;">Select attendance options</mat-card-title>
+    <mat-card-content>
+        <form action="">
+            <mat-form-field *ngIf="roleSelectionNeeded">
+                <mat-label> Select role </mat-label>
+                <mat-select name="roleSelector"  [(ngModel)]="selectedRole" (selectionChange)="updateGroupList()">
+                    <mat-option *ngFor="let role of ['Trainee', 'Coach']" [value]="role">
+                        {{role}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <mat-label> Select group </mat-label>
+                <mat-select name="groupSelector" [(ngModel)]="selectedGroup" >
+                    <mat-option *ngFor="let group of this.selectableGroups" [value]="group">
+                        {{group.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+        <button mat-raised-button color="primary" class="login-button" (click)="continue()">
+            OK
+        </button>
+        <button mat-raised-button color="secondary" class="cancel-button" (click)="cancel()">
+            Cancel
+        </button>
+    </mat-card-content>
+</mat-card>

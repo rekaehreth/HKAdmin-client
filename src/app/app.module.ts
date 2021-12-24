@@ -47,6 +47,7 @@ import { RegisterGuestDialogComponent } from './training/training-details-dialog
 import { ManageTrainingFinancesDialogComponent } from './training/training-details-dialog/manage-training-finances-dialog/manage-training-finances-dialog.component';
 import { TrainingDetailsDialogComponent } from './training/training-details-dialog/training-details-dialog.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { RegisterTrainingDialogComponent } from './training/training-card/register-training-dialog/register-training-dialog.component';
 
 @NgModule({
     declarations: [
@@ -68,6 +69,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
         RegisterGuestDialogComponent,
         ManageTrainingFinancesDialogComponent,
         TrainingDetailsDialogComponent,
+        RegisterTrainingDialogComponent,
     ],
     imports: [
         BrowserModule,
