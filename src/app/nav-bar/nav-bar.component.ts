@@ -38,7 +38,7 @@ export class NavBarComponent implements OnInit {
             title: 'Finances',
             routerLink: '/finance',
             roles: ['trainee', 'coach', 'admin'],
-            icon: 'attach_money',
+            icon: 'savings',
         },
         {
             title: 'Profile',

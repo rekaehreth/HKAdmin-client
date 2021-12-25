@@ -19,18 +19,18 @@ export type Application = {
 };
 
 export type RawUser = {
-    id : number;
-    trainings : any[];
-    name : string;
-    roles : string; // trainee | coach | guardian | guest | admin
-    email : string;
-    username : string;
-    password : string;
-    groups : RawGroup[];
-    birth_date : Date;
-    payments : any[];
+    id: number;
+    trainings: any[];
+    name: string;
+    roles: string; // trainee | coach | guardian | guest | admin
+    email: string;
+    username: string;
+    password: string;
+    groups: RawGroup[];
+    birth_date: Date;
+    payments: any[];
     // children : any[];
-}
+};
 
 export type RawCoach = {
     id: number;
@@ -38,32 +38,32 @@ export type RawCoach = {
     groups: RawGroup[];
     trainings: RawTraining[];
     wage: number
-}
+};
 
 export type RawLocation = {
-    id : number;
-    name : string;
-    capacity : number;
-    min_attendees : number;
-    trainings : any[];
+    id: number;
+    name: string;
+    capacity: number;
+    min_attendees: number;
+    trainings: any[];
     plus_code: string;
-}
+};
 
 export type RawGroup = {
-    id : number;
-    name : string;
-    members : any[];
-    coaches : any[];
-    trainings : any[];
-}
+    id: number;
+    name: string;
+    members: any[];
+    coaches: any[];
+    trainings: any[];
+};
 
 export type RawPayment = {
-    id : number;
-    amount : number;
-    time : Date;
-    status : string; // Paid | Pending
-    description : string; // E.g. Edzés, Gyakorló Jégcsarnok 2021.04.18. 9:00
-    notes : string; // E.g. Credentials of deleted user
-    user : RawUser;
+    id: number;
+    amount: number;
+    time: Date;
+    status: string; // Paid | Pending
+    description: string; // E.g. Edzés, Gyakorló Jégcsarnok 2021.04.18. 9:00
+    notes: string; // E.g. Credentials of deleted user
+    user: RawUser;
     training: RawTraining;
-}
+};

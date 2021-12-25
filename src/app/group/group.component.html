@@ -11,7 +11,7 @@
                 </mat-panel-title>
                 <mat-panel-description>
                     <button mat-button>
-                        <mat-icon matTooltip="Delete group"> delete </mat-icon>
+                        <mat-icon matTooltip="Delete group" (click)="deleteGroup($event, group.id)"> delete </mat-icon>
                     </button>
                 </mat-panel-description>
             </mat-expansion-panel-header>
@@ -81,6 +81,23 @@
                     </mat-list-item>
                 </mat-list>
             </mat-expansion-panel>
+        </mat-expansion-panel>
+        <mat-expansion-panel hideToggle disabled>
+            <mat-expansion-panel-header class="right-aligned-header" >
+                <mat-panel-title>
+                    <form >
+                        <mat-form-field class="example-full-width" appearance="fill">
+                            <mat-label>New group name</mat-label>
+                            <input matInput value="" [(ngModel)]="newGroupName" name="newGroupNameInput">
+                        </mat-form-field>
+                    </form>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <button mat-button>
+                        <mat-icon matTooltip="Create group" (click)="addNewGroup()"> add </mat-icon>
+                    </button>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
         </mat-expansion-panel>
     </mat-accordion>
 </mat-card>

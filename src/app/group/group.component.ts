@@ -3,6 +3,8 @@ import { FormControl } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { HttpService } from '../httpService';
 import { RawGroup, RawCoach, RawUser } from '../types';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-group',
@@ -18,10 +20,12 @@ export class GroupComponent implements OnInit {
     selectedUser!: RawUser;
     selectedCoach!: RawUser;
     nameFilterControl: FormControl = new FormControl('');
+    newGroupName = '';
 
     constructor(
         private http: HttpService,
-        private authService: AuthService
+        private authService: AuthService,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -56,7 +60,7 @@ export class GroupComponent implements OnInit {
         this.coachesNotInGroup = [];
         const coaches = await this.http.get<RawCoach[]>(`coach`);
         for (const coach of coaches ) {
-            if ( !group.coaches.map( coach => coach.id ).includes(coach.id)) {
+            if ( !group.coaches.map( mappedCoach => mappedCoach.id ).includes(coach.id)) {
                 this.coachesNotInGroup.push(coach.user);
             }
         }
@@ -92,7 +96,25 @@ export class GroupComponent implements OnInit {
         await this.getGroups();
     }
     filterByName(filterString: string): void {
-        const filteredGroups = this.unfilteredGroups.filter(group => group.name.toLowerCase().includes(filterString.toLowerCase()));
-        this.groups = filteredGroups;
+        this.groups =  this.unfilteredGroups.filter(group => group.name.toLowerCase().includes(filterString.toLowerCase()));
+    }
+
+    async addNewGroup(): Promise<void> {
+        if (this.newGroupName !== ''){
+            await this.http.post('group/new', {name: this.newGroupName});
+            this.newGroupName = '';
+            await this.getGroups();
+        }
+    }
+
+    async deleteGroup(event: Event, groupId: number): Promise<void>{
+        event.stopPropagation();
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: 'This group will be permanently deleted. Are you sure?'});
+        dialogRef.afterClosed().subscribe(async result => {
+            if (result.result === 'confirm'){
+                await this.http.delete(`group/${groupId}`);
+                await this.getGroups();
+            }
+        });
     }
 }
