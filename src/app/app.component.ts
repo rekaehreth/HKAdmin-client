@@ -20,28 +20,25 @@ export class AppComponent implements OnInit {
         private snackBar: MatSnackBar,
     ) {
     }
-    ngOnInit() {
+    ngOnInit(): void {
         this.authService.logOutForced.subscribe( _ => {
             this.alertForcedLogout();
-        })
+        });
     }
-    openLoginDialog() {
-        const dialogRef = this.dialog.open(RegistrationComponent, {
+    openLoginDialog(): void {
+        this.dialog.open(RegistrationComponent, {
             width: '50vw',
             data: {},
-            disableClose: true,
         });
-        dialogRef.afterClosed().subscribe(result => {
-            console.log("Login dialog closed ", result);
-        })
     }
     get isUserLoggedIn(): boolean {
         return this.authService.isLoggedIn();
     }
-    alertForcedLogout() {
-        this.snackBar.open("Session expired. Please log in again", "OK", { duration: 3000});
+    alertForcedLogout(): void {
+        this.router.navigate(['']);
+        this.snackBar.open('Session expired. Please log in again', 'OK', { duration: 3000});
     }
-    logOut() {
+    logOut(): void {
         this.authService.logOutUser();
         this.router.navigate(['']);
     }

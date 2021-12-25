@@ -1,6 +1,7 @@
-import { Subject } from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Injectable } from '@angular/core';
+import { timer } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -9,6 +10,8 @@ export class AuthService {
     ) { }
     loginStatusChange = new Subject();
     logOutForced = new Subject();
+    ticker = timer(30000, 30000);
+    tickerSubscription: Subscription | undefined = undefined;
     getLoggedInUserToken(): string {
         const token = localStorage.getItem('userToken');
         return (token === null) ? '' : token;
@@ -31,9 +34,11 @@ export class AuthService {
     setLoggedInUser(userId: number, userRoles: string[], token: string): void {
         localStorage.setItem('userToken', token);
         this.loginStatusChange.next('login');
+        this.tickerSubscription = this.ticker.subscribe(() => this.isAuthenticated());
     }
     logOutUser(): void {
         localStorage.removeItem('userToken');
+        this.tickerSubscription?.unsubscribe();
         this.loginStatusChange.next('logout');
     }
     triggerLoginStatusChange(): void {
