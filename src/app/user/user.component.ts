@@ -20,9 +20,8 @@ export class UserComponent implements OnInit, AfterViewInit {
     displayedColumns: string[] = ['name', 'email', 'groups', 'roles', 'actions'];
     roleList: string[] = ['guest', 'trainee', 'coach', 'admin'];
     groupList: string[] = [];
-    panelOpenState: boolean[] = [];
-    groupFilterControl = new FormControl("");
-    roleFilterControl = new FormControl("");
+    groupFilterControl = new FormControl('');
+    roleFilterControl = new FormControl('');
     groupFilter: string[] = [];
     roleFilter: string[] = [];
     constructor(
@@ -30,19 +29,19 @@ export class UserComponent implements OnInit, AfterViewInit {
         public dialog: MatDialog,
     ) { }
     ngOnInit(): void {
-        this.loadUsers();
-        this.loadAvailableGroups();
-        this.groupFilterControl.valueChanges.subscribe( value =>{
-            this.groupFilter = value;
-            this.updateDataSource();
-        });
-        this.roleFilterControl.valueChanges.subscribe( value =>{
-            this.roleFilter = value;
-            this.updateDataSource();
+        this.loadUsers().then(async _ => {
+            await this.loadAvailableGroups();
+            this.groupFilterControl.valueChanges.subscribe( value => {
+                this.groupFilter = value;
+                this.updateDataSource();
+            });
+            this.roleFilterControl.valueChanges.subscribe( value => {
+                this.roleFilter = value;
+                this.updateDataSource();
+            });
         });
     }
-    ngAfterViewInit() {
-        console.log(this.sort)
+    ngAfterViewInit(): void {
         if (this.sort) {
             this.dataSource.sort = this.sort;
         }
@@ -54,19 +53,21 @@ export class UserComponent implements OnInit, AfterViewInit {
             this.dataSource.sort = this.sort;
         }
     }
-    async loadAvailableGroups(){
-        this.groupList = (await this.http.get<RawGroup[]>('group')).map(group=> group.name);
+    async loadAvailableGroups(): Promise<void> {
+        this.groupList = (await this.http.get<RawGroup[]>('group')).map(group => group.name);
     }
-    
-    updateDataSource(){
+
+    updateDataSource(): void {
         const filteredUsers = this.users.filter(user => {
             let matchesGroupFilter = true;
             let matchesRoleFilter = true;
-            if(this.groupFilter.length > 0){
-                matchesGroupFilter = user.groups.map(group => group.name).filter(groupName => this.groupFilter.includes(groupName)).length > 0;
+            if (this.groupFilter.length > 0){
+                matchesGroupFilter = user.groups.map(group => group.name)
+                    .filter(groupName => this.groupFilter.includes(groupName)).length > 0;
             }
-            if(this.roleFilter.length > 0){
-                matchesRoleFilter = user.roles.split(" ").filter(role=> this.roleFilter.includes(role)).length > 0;
+            if (this.roleFilter.length > 0){
+                matchesRoleFilter = user.roles.split(' ')
+                    .filter(role => this.roleFilter.includes(role)).length > 0;
             }
             return matchesGroupFilter && matchesRoleFilter;
         });
@@ -75,30 +76,27 @@ export class UserComponent implements OnInit, AfterViewInit {
             this.dataSource.sort = this.sort;
         }
     }
-    manageUserRoles(user: RawUser) {
+    async manageUserRoles(user: RawUser): Promise<void> {
         const dialogRef = this.dialog.open(EditUserComponent, {
             width: '50vw',
             data: { user },
             disableClose: true,
         });
         dialogRef.afterClosed().subscribe(async result => {
-            console.log(result);
-            if (result.action === "save") {
-                console.log( result.newRoles );
-                if( user.roles.includes("coach") && !result.newRoles.includes("coach")) {
-                    // delete coach
+            if (result.action === 'save') {
+                if ( user.roles.includes('coach') && !result.newRoles.includes('coach')) {
                     const coachId = (await this.http.get<RawCoach>(`coach/getByUserId/${user.id}`)).id;
                     await this.http.delete(`coach/${coachId}`);
                 }
-                if( !user.roles.includes("coach") && result.newRoles.includes("coach")) {
+                if ( !user.roles.includes('coach') && result.newRoles.includes('coach')) {
                     await this.http.post<RawCoach>('coach/new', {
                         userId : user.id,
-                        rawCoachData : { 
+                        rawCoachData : {
                             wage : 4000
                         }
-                    })
+                    });
                 }
-                const rolesString = result.newRoles.join(" ");
+                const rolesString = result.newRoles.join(' ');
                 await this.http.post<{}>('user/modify', {
                     userId: user.id,
                     rawUserData: {
@@ -106,21 +104,20 @@ export class UserComponent implements OnInit, AfterViewInit {
                         roles: rolesString
                     }
                 });
-                this.loadUsers();
+                await this.loadUsers();
             }
         });
     }
     deleteUser(user: RawUser): void {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             width: '50vw',
-            data: "Do you really want to delete this user?",
+            data: 'Do you really want to delete this user?',
             disableClose: true,
         });
         dialogRef.afterClosed().subscribe(async result => {
-            console.log(result);
-            if (result.result === "confirm") {
+            if (result.result === 'confirm') {
                 await this.http.delete(`user/${user.id}`);
-                this.loadUsers();
+                await this.loadUsers();
             }
         });
     }

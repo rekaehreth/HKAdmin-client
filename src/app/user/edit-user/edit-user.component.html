@@ -3,8 +3,8 @@
         Select all roles that apply to this user
     </mat-card-title>
     <mat-card-content>
-        <mat-selection-list #userRoles (selectionChange)="updateSelected()"> 
-            <mat-list-option checkboxPosition="before" *ngFor="let role of this.roles" [value]="role">
+        <mat-selection-list #userRoles (selectionChange)="updateSelected()">
+            <mat-list-option checkboxPosition="before" *ngFor="let role of this.roles" [value]="role" [selected]="data.user.roles.includes(role)">
                 {{ role }}
             </mat-list-option>
         </mat-selection-list>
