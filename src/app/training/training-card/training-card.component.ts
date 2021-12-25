@@ -37,19 +37,20 @@ export class TrainingCardComponent implements OnInit {
     ngOnInit(): void {
         this.roles = this.authService.getLoggedInRoles();
     }
-    openEditTrainingDialog(): void {
+    openEditTrainingDialog(event: Event): void {
+        event.stopPropagation();
         const dialogRef = this.dialog.open(NewTrainingComponent, {
             width: '50vw',
-            data: this.trainingData.training,
-            disableClose: true,
+            data: this.trainingData.training
         });
         dialogRef.afterClosed().subscribe(async result => {
-            if (result.refreshNeeded) {
+            if (result && result.refreshNeeded) {
                 this.refreshTrainings.emit('update');
             }
         });
     }
-    deleteTraining(): void {
+    deleteTraining(event: Event): void {
+        event.stopPropagation();
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             width: '50vw',
             data: 'Do you really want to delete this training?',
