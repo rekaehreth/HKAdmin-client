@@ -11,6 +11,7 @@ import { TrainingDetailsDialogComponent } from '../training-details-dialog/train
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {RegisterGuestDialogComponent} from '../training-details-dialog/register-guest-dialog/register-guest-dialog.component';
 import {RegisterTrainingDialogComponent} from './register-training-dialog/register-training-dialog.component';
+import {ManageTrainingFinancesDialogComponent} from '../training-details-dialog/manage-training-finances-dialog/manage-training-finances-dialog.component';
 
 @Component({
     selector: 'app-training-card',
@@ -22,6 +23,9 @@ export class TrainingCardComponent implements OnInit {
     trainingData!: {training: RawTraining, subscribedForTraining: boolean};
     roles: string[] = [];
     tooltipPosition: TooltipPosition = 'above';
+    trainingAvailable = true;
+    traineeGroups: RawGroup[] = [];
+    coachGroups: RawGroup[] | undefined = [];
     formatFullDate = formatFullDate;
     formatHourDate = formatHourDate;
 
@@ -36,9 +40,15 @@ export class TrainingCardComponent implements OnInit {
     ) { }
     ngOnInit(): void {
         this.roles = this.authService.getLoggedInRoles();
+        this.http.get<RawUser>(`user/${this.authService.getLoggedInUserId()}`).then(async (user) => {
+            const coach = await this.http.get<RawCoach>(`coach/getByUserId/${this.authService.getLoggedInUserId()}`);
+            this.traineeGroups = this.getAvailableGroupsForTraining(user );
+            this.coachGroups = coach !== undefined ? this.getAvailableGroupsForTraining(coach) : undefined;
+            this.trainingAvailable = this.traineeGroups.length > 0 || (this.coachGroups !== undefined && this.coachGroups.length > 0);
+        });
+
     }
-    openEditTrainingDialog(event: Event): void {
-        event.stopPropagation();
+    openEditTrainingDialog(): void {
         const dialogRef = this.dialog.open(NewTrainingComponent, {
             width: '50vw',
             data: this.trainingData.training
@@ -49,8 +59,7 @@ export class TrainingCardComponent implements OnInit {
             }
         });
     }
-    deleteTraining(event: Event): void {
-        event.stopPropagation();
+    deleteTraining(): void {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             width: '50vw',
             data: 'Do you really want to delete this training?',
@@ -69,23 +78,20 @@ export class TrainingCardComponent implements OnInit {
             data: this.trainingData.training,
         });
     }
-    async signUpForTraining(event: Event): Promise<void> {
-        event.stopPropagation();
+    async signUpForTraining(): Promise<void> {
         const loggedInRoles = this.authService.getLoggedInRoles();
         if ( loggedInRoles.includes('guest') ){
             await this.addGuestToTraining();
         }
         else{
-            const user = await this.http.get<RawUser>(`user/${this.authService.getLoggedInUserId()}`);
-            const coach = await this.http.get<RawCoach>(`coach/getByUserId/${this.authService.getLoggedInUserId()}`);
-            const traineeGroups = this.getAvailableGroupsForTraining(user);
-            const coachGroups = coach !== undefined ? this.getAvailableGroupsForTraining(coach) : undefined;
-            if ( traineeGroups.length === 1 && (coachGroups === undefined || coachGroups.length === 0)){
-                await this.addTraineeToTraining(traineeGroups[0].id);
-            }else if (traineeGroups.length === 0 && coachGroups?.length === 1){
-                await this.registerCoach(coachGroups[0].id);
+            if ( this.traineeGroups.length === 1 && (this.coachGroups === undefined || this.coachGroups.length === 0)){
+                await this.addTraineeToTraining(this.traineeGroups[0].id);
+            }else if (this.traineeGroups.length === 0 && this.coachGroups?.length === 1){
+                await this.registerCoach(this.coachGroups[0].id);
             }else{
-                const dialogRef = this.dialog.open(RegisterTrainingDialogComponent, { data: {traineeGroups, coachGroups}});
+                const dialogRef = this.dialog.open(RegisterTrainingDialogComponent, {
+                    data: { traineeGroups : this.traineeGroups, coachGroups: this.coachGroups}
+                });
                 dialogRef.afterClosed().subscribe(async result => {
                     if (result) {
                         if (result.role === 'Trainee') {
@@ -108,8 +114,7 @@ export class TrainingCardComponent implements OnInit {
                 trainingGroup => trainingGroup.id === group.id) !== undefined
         );
     }
-    async revokeApplication(event: Event): Promise<void> {
-        event.stopPropagation();
+    async revokeApplication(): Promise<void> {
         await this.deregisterUser();
         this.refreshTrainings.emit('update');
     }
@@ -218,5 +223,12 @@ export class TrainingCardComponent implements OnInit {
             }
         });
         this.snackBar.open('Application withdrawal successful', 'OK', { duration: 3000});
+    }
+
+    openAdministrateDialog(): void {
+        this.dialog.open(ManageTrainingFinancesDialogComponent, {
+            width: '50vw',
+            data: this.trainingData.training,
+        });
     }
 }

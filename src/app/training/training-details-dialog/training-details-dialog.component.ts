@@ -8,7 +8,6 @@ import { HttpService } from 'src/app/httpService';
 import { Application, RawGroup, RawTraining, RawUser } from 'src/app/types';
 import { findUserInApplications, formatFullDate, formatHourDate } from 'src/app/utils';
 import { environment } from 'src/environments/environment';
-import { ManageTrainingFinancesDialogComponent } from './manage-training-finances-dialog/manage-training-finances-dialog.component';
 
 @Component({
     selector: 'app-training-details-dialog',
@@ -95,11 +94,5 @@ export class TrainingDetailsDialogComponent implements OnInit {
     }
     navigateToGoogleMaps(): void {
         window.open(this.googleMapsLink, '_blank')?.focus();
-    }
-    openAdministrateTrainingDialog(): void {
-        this.dialog.open(ManageTrainingFinancesDialogComponent, {
-            width: '50vw',
-            data: this.data,
-        });
     }
 }

@@ -1,4 +1,4 @@
-<mat-card class="trainingCard" matTooltip="Click to view details" [matTooltipPosition]="tooltipPosition" (click)="openDetailDialog()">
+<mat-card class="trainingCard">
     <mat-card-title>
         <mat-icon> event </mat-icon>
         {{formatFullDate(trainingData.training.startTime)}}
@@ -13,16 +13,22 @@
             {{ trainingData.training.location.name }}
         </p>
         <div class="modifierButtons">
-            <button mat-raised-button matTooltip="Apply for training" [matTooltipPosition]="tooltipPosition" (click)="signUpForTraining($event)" *ngIf="!this.trainingData.subscribedForTraining">
+            <button mat-raised-button class="hint" matTooltip="Details" [matTooltipPosition]="tooltipPosition" (click)="openDetailDialog()">
+                <mat-icon> more_horiz </mat-icon>
+            </button>
+            <button mat-raised-button matTooltip="Apply for training" [matTooltipPosition]="tooltipPosition" (click)="signUpForTraining()" *ngIf="!this.trainingData.subscribedForTraining && this.trainingAvailable">
                 <mat-icon> add_circle_outline </mat-icon>
             </button>
-            <button mat-raised-button matTooltip="Revoke training application" [matTooltipPosition]="tooltipPosition" (click)="revokeApplication($event)" *ngIf="this.trainingData.subscribedForTraining">
+            <button mat-raised-button matTooltip="Revoke training application" [matTooltipPosition]="tooltipPosition" (click)="revokeApplication()" *ngIf="this.trainingData.subscribedForTraining && this.trainingAvailable">
                 <mat-icon> remove_circle_outline </mat-icon>
             </button>
-            <button mat-raised-button matTooltip="Edit training" [matTooltipPosition]="tooltipPosition" (click)="openEditTrainingDialog($event)" *ngIf="this.roles.includes('admin') || this.roles.includes('coach')">
+            <button mat-raised-button matTooltip="Edit training" [matTooltipPosition]="tooltipPosition" (click)="openEditTrainingDialog()" *ngIf="this.roles.includes('admin') || this.roles.includes('coach')">
                 <mat-icon> edit </mat-icon>
             </button>
-            <button mat-raised-button color="warn" matTooltip="Delete training" [matTooltipPosition]="tooltipPosition" (click)="deleteTraining($event)" *ngIf="this.roles.includes('admin') || this.roles.includes('coach')">
+            <button mat-raised-button matTooltip="Administrate training" [matTooltipPosition]="tooltipPosition" (click)="openAdministrateDialog()" *ngIf="this.roles.includes('admin') || this.roles.includes('coach')">
+                <mat-icon> task </mat-icon>
+            </button>
+            <button mat-raised-button color="warn" matTooltip="Delete training" [matTooltipPosition]="tooltipPosition" (click)="deleteTraining()" *ngIf="this.roles.includes('admin') || this.roles.includes('coach')">
                 <mat-icon> delete </mat-icon>
             </button>
         </div>
