@@ -27,12 +27,11 @@ export class RegistrationComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any) { }
     ngOnInit(): void {
     }
-    async signIn() {
+    async signIn(): Promise<void> {
         if (!this.emailLoginControl.errors && !this.passwordLoginControl.errors) {
             const result = await this.http.post<{ success: boolean, token?: string, userId?: number, userRoles?: string }>
                 ('user/login', { email: this.emailLoginControl.value, password: this.passwordLoginControl.value });
             if (result.success) {
-                console.log(result);
                 this.authService.setLoggedInUser(
                     result.userId ? result.userId : 0,
                     result.userRoles ? result.userRoles.split(' ') : [],
@@ -81,11 +80,10 @@ export class RegistrationComponent implements OnInit {
         }
     }
     checkRegisterForm(): boolean {
-        const valid = !this.emailControl.errors
+        return !this.emailControl.errors
             && !this.passwordControl.errors
             && !this.nameControl.errors
             && !this.birthControl.errors
             && this.passwordControl.value === this.rePasswordControl.value;
-        return valid;
     }
 }

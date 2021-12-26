@@ -35,8 +35,7 @@ export class FinanceComponent implements OnInit {
     ngOnInit(): void {
         this.loadPayments();
     }
-    ngAfterViewInit() {
-        console.log(this.sort);
+    ngAfterViewInit(): void {
         if (this.sort) {
             this.adminDataSource.sort = this.sort;
             this.userDataSource.sort = this.sort;

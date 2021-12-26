@@ -102,7 +102,6 @@ export class TrainingCardComponent implements OnInit {
                     } else {
                         this.snackBar.open('Registration cancelled', 'OK', {duration: 3000});
                     }
-                    console.log('dialog closed', result);
                 });
             }
         }

@@ -64,8 +64,6 @@ export class GroupComponent implements OnInit {
                 this.coachesNotInGroup.push(coach.user);
             }
         }
-        console.log('Coaches not in group: ', this.coachesNotInGroup);
-        console.log('Group coaches: ', group.coaches);
     }
     async addTrainee(userId: number, groupId: number): Promise<void> {
         await this.http.post<{}>('user/addTraineeToGroup', {

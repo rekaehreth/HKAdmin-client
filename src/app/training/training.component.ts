@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../auth.service';
 import { HttpService } from '../httpService';
 import { RawTraining } from '../types';
-import { formatFullDate, formatHourDate } from '../utils';
+import { formatFullDate } from '../utils';
 import { NewTrainingComponent } from './new-training/new-training.component';
 
 @Component({
@@ -18,7 +18,6 @@ export class TrainingComponent implements OnInit {
     roles: string[] = [];
 
     formatFullDate = formatFullDate;
-    formatHourDate = formatHourDate;
     constructor(
         private http: HttpService,
         public dialog: MatDialog,
@@ -59,7 +58,6 @@ export class TrainingComponent implements OnInit {
     setColNum(): boolean {
             const screenWidth = window.innerWidth;
             this.colNum = screenWidth / 360 >= 1 ? screenWidth / 360 : 1;
-
             return true;
     }
     openNewTrainingDialog(): void {
@@ -68,7 +66,6 @@ export class TrainingComponent implements OnInit {
             disableClose: true,
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log('New training dialog closed ', result);
             if (result.refreshNeeded) {
                 this.loadTrainings();
             }
