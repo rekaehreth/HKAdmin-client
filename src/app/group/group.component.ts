@@ -117,4 +117,8 @@ export class GroupComponent implements OnInit {
             }
         });
     }
+
+    handleInput(event: KeyboardEvent): void{
+        event.stopPropagation();
+    }
 }

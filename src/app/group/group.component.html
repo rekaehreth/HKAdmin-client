@@ -1,9 +1,9 @@
 <mat-card>
     <mat-form-field appearance="fill">
-        <mat-label>Filter for name</mat-label>
+        <mat-label>Name</mat-label>
         <input matInput [formControl]="nameFilterControl">
       </mat-form-field>
-    <mat-accordion>
+    <mat-accordion multi>
         <mat-expansion-panel hideToggle *ngFor="let group of groups">
             <mat-expansion-panel-header class="right-aligned-header">
                 <mat-panel-title>
@@ -88,7 +88,7 @@
                     <form >
                         <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>New group name</mat-label>
-                            <input matInput value="" [(ngModel)]="newGroupName" name="newGroupNameInput">
+                            <input matInput value="" [(ngModel)]="newGroupName" name="newGroupNameInput" (keydown)="handleInput($event)">
                         </mat-form-field>
                     </form>
                 </mat-panel-title>
