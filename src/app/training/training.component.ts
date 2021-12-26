@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { format } from 'date-fns';
 import { AuthService } from '../auth.service';
 import { HttpService } from '../httpService';
 import { RawTraining } from '../types';
@@ -40,8 +39,10 @@ export class TrainingComponent implements OnInit {
                 (`user/listAvailableTrainings/${userId}`);
         }
         if (this.trainings.length !== 0 ){
-            this.trainings.sort(
-                (
+            this.trainings = this.trainings.filter( training => {
+                return new Date() <= new Date(training.training.endTime);
+            });
+            this.trainings.sort((
                     a: {training: RawTraining, subscribedForTraining: boolean},
                     b: {training: RawTraining, subscribedForTraining: boolean}
                 ) => {
