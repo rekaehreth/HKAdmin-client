@@ -1,9 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AuthService } from 'src/app/auth.service';
 import { HttpService } from 'src/app/httpService';
-import { RawCoach, RawGroup, RawLocation, RawTraining } from 'src/app/types';
+import { RawGroup, RawLocation, RawTraining } from 'src/app/types';
 import { formatFullDate, formatHourDate } from 'src/app/utils';
 
 @Component({
@@ -31,12 +30,10 @@ export class NewTrainingComponent implements OnInit {
     groupControl = new FormControl();
 
     formatFullDate = formatFullDate;
-    formatHourDate = formatHourDate;
 
     constructor(
         private http: HttpService,
         public dialogRef: MatDialogRef<NewTrainingComponent>,
-        private authService: AuthService,
         @Inject(MAT_DIALOG_DATA) public data: RawTraining,
     ) { }
     ngOnInit(): void {
@@ -71,18 +68,18 @@ export class NewTrainingComponent implements OnInit {
     }
     async saveTraining(): Promise<void> {
         if (this.mode === 'new') {
-            this.saveNewTraining();
+            await this.saveNewTraining();
         }
         else {
-            this.updateTraining();
+            await this.updateTraining();
         }
     }
     async saveNewTraining(): Promise<void> {
         const newTraining = await this.http.post<RawTraining>('training/new', {
             locationId: this.selectedLocationId,
             rawTrainingData: {
-                startTime: formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value,
-                endTime: formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value,
+                startTime: new Date(formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value),
+                endTime: new Date(formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value),
                 type: this.selectedType,
                 isPublic: this.isPublic,
                 applications: '',
@@ -97,8 +94,7 @@ export class NewTrainingComponent implements OnInit {
         this.dialogRef.close({ refreshNeeded: true });
     }
     async updateTraining(): Promise<void> {
-        // **TODO** only modify data that has been modified in form - does typeorm does that for me?
-        const modifiedTraining = await this.http.post<{}>('training/modify', {
+        await this.http.post<{}>('training/modify', {
             locationId: this.selectedLocationId,
             rawTrainingData: {
                 id: this.data.id,
@@ -108,8 +104,8 @@ export class NewTrainingComponent implements OnInit {
                 isPublic: this.isPublic,
             }
         });
-        const removedGroups = this.loadedGroupIds.filter( id => { return !this.selectedGroups.includes(id); });
-        const addedGroups = this.selectedGroups.filter( id => { return !this.loadedGroupIds.includes(id); });
+        const removedGroups = this.loadedGroupIds.filter( id => !this.selectedGroups.includes(id));
+        const addedGroups = this.selectedGroups.filter( id => !this.loadedGroupIds.includes(id));
         for (const groupId of addedGroups) {
             await this.http.post<RawGroup>('training/addGroup', {
                 groupId,
