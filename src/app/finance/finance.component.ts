@@ -18,8 +18,8 @@ export class FinanceComponent implements OnInit {
     userDataSource = new MatTableDataSource<RawPayment>();
 
     @ViewChild(MatSort) sort?: MatSort;
-    adminDisplayedColumns: string[] = ['date', 'name', 'email', 'amount', 'status'];
-    userDisplayedColumns: string[] = ['date', 'amount', 'status'];
+    adminDisplayedColumns: string[] = ['date', 'name', 'email', 'amount', 'status', 'actions'];
+    userDisplayedColumns: string[] = ['date', 'amount', 'status', 'actions'];
 
     roles: string[] = [];
     user!: RawUser;
@@ -36,7 +36,7 @@ export class FinanceComponent implements OnInit {
         this.loadPayments();
     }
     ngAfterViewInit() {
-        console.log(this.sort)
+        console.log(this.sort);
         if (this.sort) {
             this.adminDataSource.sort = this.sort;
             this.userDataSource.sort = this.sort;
@@ -44,12 +44,10 @@ export class FinanceComponent implements OnInit {
     }
     async loadPayments(): Promise<void> {
         this.roles = this.authService.getLoggedInRoles();
-        if( this.roles.includes("admin")) {
+        if ( this.roles.includes('admin')) {
             await this.loadAdminPayments();
         }
         await this.loadUserPayments();
-        // console.log(this.allPayments);
-        // console.log(this.userPayments);
         this.adminDataSource = new MatTableDataSource(this.allPayments);
         this.userDataSource = new MatTableDataSource(this.userPayments);
         if (this.sort) {
@@ -64,8 +62,16 @@ export class FinanceComponent implements OnInit {
         const userId = this.authService.getLoggedInUserId();
         this.userPayments = await this.http.get<RawPayment[]>(`finance/getByUser/${userId}`);
     }
-    // layout: similarly to user, a table, with sort options to username, payment date, description
-    // if no user is linked, display name from description with red and concatenate (deleted user)
-    // amount: green if > 0, red if < 0, standard if === 0
+    async changePaymentStatus(payment: RawPayment, index: number, status: string): Promise<void> {
+        await this.http.post<RawPayment>('finance/modify', {
+            userId : payment.user.id,
+            paymentId : payment.id,
+            trainingId: payment.training.id,
+            rawPaymentData : {
+                status,
+                time : Date(),
+            }});
+        await this.loadPayments();
+    }
     // **TODO** when deleting a user, remove user from payments linked to it
 }
