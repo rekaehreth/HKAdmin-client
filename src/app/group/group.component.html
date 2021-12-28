@@ -3,14 +3,14 @@
         <mat-label>Name</mat-label>
         <input matInput [formControl]="nameFilterControl">
       </mat-form-field>
-    <mat-accordion multi>
+    <mat-accordion>
         <mat-expansion-panel hideToggle *ngFor="let group of groups">
             <mat-expansion-panel-header class="right-aligned-header">
                 <mat-panel-title>
                     {{ group.name }}
                 </mat-panel-title>
                 <mat-panel-description>
-                    <button mat-button>
+                    <button mat-button *ngIf="roles.includes('admin')">
                         <mat-icon matTooltip="Delete group" (click)="deleteGroup($event, group.id)"> delete </mat-icon>
                     </button>
                 </mat-panel-description>
@@ -64,13 +64,13 @@
                     <!-- Coaches in group -->
                     <mat-list-item *ngFor="let coach of group.coaches" class="smol">
                         {{ coach.user.name }}
-                        <button mat-raised-button (click)="removeCoach(coach.id, group.id)">
+                        <button mat-raised-button (click)="removeCoach(coach.user.id, group.id)" *ngIf="roles.includes('admin')">
                             <mat-icon matTooltip="Remove coach from group"> group_remove </mat-icon>
                         </button>
                     </mat-list-item>
                     <!-- Add new coach -->
-                    <mat-list-item>
-                        <mat-select placeholder="Add coach" [(value)]="selectedCoach" class="smol">
+                    <mat-list-item *ngIf="roles.includes('admin')">
+                        <mat-select placeholder="Add coach" [(value)]="selectedCoach" class="smol" >
                             <mat-option *ngFor="let coach of coachesNotInGroup" [value]="coach" class="smol">
                                 {{coach.name}}
                             </mat-option>
@@ -82,7 +82,7 @@
                 </mat-list>
             </mat-expansion-panel>
         </mat-expansion-panel>
-        <mat-expansion-panel hideToggle disabled>
+        <mat-expansion-panel hideToggle disabled *ngIf="roles.includes('admin')">
             <mat-expansion-panel-header class="right-aligned-header" >
                 <mat-panel-title>
                     <form >

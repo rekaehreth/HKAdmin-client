@@ -43,14 +43,15 @@ export class GroupComponent implements OnInit {
             const coach = await this.http.get<RawCoach>(`user/getCoach/${userId}`);
             this.unfilteredGroups = coach.groups;
         }
-        this.groups = this.unfilteredGroups;
+        this.groups = this.unfilteredGroups.sort((group1, group2) => group1.name.localeCompare(group2.name));
     }
     async refreshTrainees(groupId: number): Promise<void> {
         const group = await this.http.get<RawGroup>(`group/${groupId}`);
         this.usersNotInGroup = [];
         const users = await this.http.get<RawUser[]>(`user/getByRole/trainee`);
         for (const user of users ) {
-            if ( !group.members.map( trainee => trainee.id ).includes(user.id)) {
+            if ( !group.members.map( trainee => trainee.id ).includes(user.id) &&
+                    !group.coaches.map( coach => coach.user.id ).includes(user.id)) {
                 this.usersNotInGroup.push(user);
             }
         }
@@ -60,7 +61,8 @@ export class GroupComponent implements OnInit {
         this.coachesNotInGroup = [];
         const coaches = await this.http.get<RawCoach[]>(`coach`);
         for (const coach of coaches ) {
-            if ( !group.coaches.map( mappedCoach => mappedCoach.id ).includes(coach.id)) {
+            if ( !group.coaches.map( mappedCoach => mappedCoach.id ).includes(coach.id) &&
+                !group.members.map( trainee => trainee.id ).includes(coach.user.id)) {
                 this.coachesNotInGroup.push(coach.user);
             }
         }

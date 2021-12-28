@@ -19,7 +19,7 @@ export class FinanceComponent implements OnInit {
 
     @ViewChild(MatSort) sort?: MatSort;
     adminDisplayedColumns: string[] = ['date', 'name', 'email', 'amount', 'status', 'actions'];
-    userDisplayedColumns: string[] = ['date', 'amount', 'status', 'actions'];
+    userDisplayedColumns: string[] = ['date', 'amount', 'status'];
 
     roles: string[] = [];
     user!: RawUser;

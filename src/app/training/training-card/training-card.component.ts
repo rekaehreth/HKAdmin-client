@@ -42,9 +42,10 @@ export class TrainingCardComponent implements OnInit {
         this.roles = this.authService.getLoggedInRoles();
         this.http.get<RawUser>(`user/${this.authService.getLoggedInUserId()}`).then(async (user) => {
             const coach = await this.http.get<RawCoach>(`coach/getByUserId/${this.authService.getLoggedInUserId()}`);
-            this.traineeGroups = this.getAvailableGroupsForTraining(user );
-            this.coachGroups = coach !== undefined ? this.getAvailableGroupsForTraining(coach) : undefined;
-            this.trainingAvailable = this.traineeGroups.length > 0 || (this.coachGroups !== undefined && this.coachGroups.length > 0);
+            this.traineeGroups = this.getAvailableGroupsForTraining(user);
+            this.coachGroups = coach !== undefined && coach !== null ? this.getAvailableGroupsForTraining(coach) : undefined;
+            this.trainingAvailable = (this.traineeGroups.length > 0 || (this.coachGroups !== undefined && this.coachGroups.length > 0)) ||
+                (!this.authService.isLoggedIn()) ;
         });
 
     }
@@ -108,6 +109,9 @@ export class TrainingCardComponent implements OnInit {
     }
 
     getAvailableGroupsForTraining(user: RawUser |RawCoach ): RawGroup[] {
+        if (!this.authService.isLoggedIn()){
+            return [];
+        }
         return user.groups.filter(
             group => this.trainingData.training.groups.find(
                 trainingGroup => trainingGroup.id === group.id) !== undefined

@@ -98,8 +98,8 @@ export class NewTrainingComponent implements OnInit {
             locationId: this.selectedLocationId,
             rawTrainingData: {
                 id: this.data.id,
-                startTime: formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value,
-                endTime: formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value,
+                startTime: new Date(formatFullDate(this.dateControl.value) + ' ' + this.startTimeControl.value),
+                endTime: new Date(formatFullDate(this.dateControl.value) + ' ' + this.endTimeControl.value),
                 type: this.selectedType,
                 isPublic: this.isPublic,
             }

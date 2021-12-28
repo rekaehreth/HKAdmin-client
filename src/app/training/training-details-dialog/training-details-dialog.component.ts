@@ -6,7 +6,7 @@ import OpenLocationCode, { CodeArea } from 'open-location-code-typescript';
 import { AuthService } from 'src/app/auth.service';
 import { HttpService } from 'src/app/httpService';
 import { Application, RawGroup, RawTraining, RawUser } from 'src/app/types';
-import { findUserInApplications, formatFullDate, formatHourDate } from 'src/app/utils';
+import { formatFullDate, formatHourDate } from 'src/app/utils';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -63,27 +63,8 @@ export class TrainingDetailsDialogComponent implements OnInit {
             this.initContainers().then();
     }
     async initContainers(): Promise<void> {
-        this.groups = [];
-        this.applications = [];
-        this.registeredGroupId = -1;
+        this.groups = this.data.groups.map(group => ({rawGroup : group, numOfTrainees: 0, numOfCoaches: 0, userApplied: false}));
 
-        const userId = this.authService.getLoggedInUserId();
-        this.roles = this.authService.getLoggedInRoles();
-        const user = await this.http.get<RawUser>(`user/${userId}`);
-        const userGroups = this.data.groups.filter( group => {
-            return this.roles.includes('admin') || user.groups.includes(group);
-        } );
-        this.applications = await this.http.get<Application[]>(`training/getApplications/${this.data.id}`);
-        userGroups.map( group => {
-            const numOfTrainees = this.applications.filter( application => application.role === 'trainee').length;
-            const numOfCoaches = this.applications.filter( application => application.role === 'coach').length;
-            const userApplied = this.applications.filter( application => application.userId  === userId).length > 0;
-            this.groups.push({rawGroup: group, numOfTrainees, numOfCoaches, userApplied});
-        });
-        const userIdx = findUserInApplications(userId, this.applications);
-        if ( userIdx > -1 ) {
-            this.registeredGroupId = this.applications[userIdx].groupId;
-        }
     }
     setCoordinates(): void {
         this.plus_code = OpenLocationCode.recoverNearest( this.data.location.plus_code, 47.49622, 19.04588 );

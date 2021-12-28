@@ -1,6 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth.service';
 import { HttpService } from '../httpService';
@@ -14,9 +13,9 @@ import { formatFullDate, nameValidator } from '../utils';
 })
 export class ProfileComponent implements OnInit {
     user!: RawUser;
-    inputChanged: boolean = false;
-    changePassword: boolean = false;
-    passwordVerified: boolean = false;
+    inputChanged = false;
+    changePassword = false;
+    passwordVerified = false;
 
     dateControl = new FormControl();
     nameControl = new FormControl();
@@ -26,7 +25,7 @@ export class ProfileComponent implements OnInit {
     rePasswordControl = new FormControl();
 
     formatFullDate = formatFullDate;
-    
+
     constructor(
         private http: HttpService,
         private authService: AuthService,
@@ -42,24 +41,24 @@ export class ProfileComponent implements OnInit {
     }
     initControls(): void {
         this.nameControl = new FormControl(this.user.name, [Validators.required, nameValidator()]);
-        this.nameControl.valueChanges.subscribe( () => { this.inputChanged = true } );
+        this.nameControl.valueChanges.subscribe( () => { this.inputChanged = true; } );
         this.emailControl = new FormControl(this.user.email, [Validators.required, Validators.email]);
-        this.emailControl.valueChanges.subscribe( () => { this.inputChanged = true } );
+        this.emailControl.valueChanges.subscribe( () => { this.inputChanged = true; } );
         this.dateControl = new FormControl(this.user.birth_date, Validators.required);
-        this.dateControl.valueChanges.subscribe( () => { this.inputChanged = true } );
-        this.passwordControl.valueChanges.subscribe( () => { 
+        this.dateControl.valueChanges.subscribe( () => { this.inputChanged = true; } );
+        this.passwordControl.valueChanges.subscribe( () => {
 
         } );
-        this.newPasswordControl = new FormControl("", [Validators.required, Validators.minLength(6)]);
-        this.rePasswordControl = new FormControl("", [Validators.required, Validators.minLength(6)]);
+        this.newPasswordControl = new FormControl('', [Validators.required, Validators.minLength(6)]);
+        this.rePasswordControl = new FormControl('', [Validators.required, Validators.minLength(6)]);
     }
     async editUserData(): Promise<void> {
-        if( this.changePassword && 
-            !this.newPasswordControl.errors && 
+        if ( this.changePassword &&
+            !this.newPasswordControl.errors &&
             !this.rePasswordControl.errors &&
             this.newPasswordControl.value === this.rePasswordControl.value ) {
-            await this.http.post<{success: boolean, user: RawUser }>(`user/modify`, {            
-                userId : this.user.id, 
+            await this.http.post<{success: boolean, user: RawUser }>(`user/modify`, {
+                userId : this.user.id,
                 rawUserData : {
                     name : this.nameControl.value,
                     email : this.emailControl.value,
@@ -68,8 +67,8 @@ export class ProfileComponent implements OnInit {
                 }});
         }
         else {
-            await this.http.post<{success: boolean, user: RawUser }>(`user/modify`, {            
-                userId : this.user.id, 
+            await this.http.post<{success: boolean, user: RawUser }>(`user/modify`, {
+                userId : this.user.id,
                 rawUserData : {
                     name : this.nameControl.value,
                     email : this.emailControl.value,
@@ -83,39 +82,41 @@ export class ProfileComponent implements OnInit {
         this.changePassword = true;
     }
     async verifyPassword(): Promise<void> {
-        const result = await this.http.post<{ 
-            success: boolean, 
-            token?: string, 
-            userId?: number, 
-            userRoles?: string 
-        }> ('user/login', { 
-            email: this.user.email, 
-            password: this.passwordControl.value ? this.passwordControl.value : "" 
+        const result = await this.http.post<{
+            success: boolean,
+            token?: string,
+            userId?: number,
+            userRoles?: string
+        }> ('user/login', {
+            email: this.user.email,
+            password: this.passwordControl.value ? this.passwordControl.value : ''
         });
         if (result.success) {
             this.passwordVerified = true;
         }
         else {
-            this.snackBar.open("Password incorrect. ", "OK", { duration: 3000});
+            this.snackBar.open('Password incorrect. ', 'OK', { duration: 3000});
         }
     }
     async saveNewPassword(): Promise<void> {
-        if(!this.newPasswordControl.errors &&!this.rePasswordControl.errors && this.newPasswordControl.value === this.rePasswordControl.value) {
-            const result = await this.http.post<{success: boolean, user: RawUser }>(`user/modify`, {            
-                userId : this.user.id, 
+        if (!this.newPasswordControl.errors &&
+            !this.rePasswordControl.errors &&
+            this.newPasswordControl.value === this.rePasswordControl.value) {
+            const result = await this.http.post<{success: boolean, user: RawUser }>(`user/modify`, {
+                userId : this.user.id,
                 rawUserData : {
                     password: this.newPasswordControl.value
             }});
-            if( result.success ) {
-                this.snackBar.open("Password changed", "OK", { duration: 3000});
+            if ( result.success ) {
+                this.snackBar.open('Password changed', 'OK', { duration: 3000});
                 this.passwordVerified = false;
                 this.changePassword = false;
-            } 
+            }
             else {
-                this.snackBar.open("Password change failed", "OK", { duration: 3000});
+                this.snackBar.open('Password change failed', 'OK', { duration: 3000});
             }
         }else{
-            this.snackBar.open("Passwords don't match", "OK", { duration: 3000});
+            this.snackBar.open('Passwords don\'t match', 'OK', { duration: 3000});
         }
     }
 }
