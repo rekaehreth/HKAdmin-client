@@ -36,6 +36,7 @@ export class ManageTrainingFinancesDialogComponent implements OnInit {
                 status,
                 time : Date(),
             }});
+        this.data.payments[index].status = status;
         await this.loadPayments();
     }
 }
